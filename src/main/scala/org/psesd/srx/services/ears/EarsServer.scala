@@ -53,6 +53,27 @@ object EarsServer extends SrxServer {
     case req@GET -> Root / _ if services(req, CoreResource.Info.toString) =>
       respondWithInfo(getDefaultSrxResponse(req))
 
+    case req@GET -> Root / objectName / _ if services(req, objectName) =>
+      executeRequest(req, addRouteParams("objectName", objectName), objectName, SifObject)
+
+    case req@GET -> Root / objectName / _ =>
+      executeRequest(req, addRouteParams("objectName", objectName), objectName, SifObject)
+
+    case req@POST -> Root / objectName / _ if services(req, objectName) =>
+      MethodNotAllowed()
+
+    case req@PUT -> Root / objectName / _ if services(req, objectName) =>
+      MethodNotAllowed()
+
+    case req@PUT -> Root / objectName / _ =>
+      MethodNotAllowed()
+
+    case req@DELETE -> Root / objectName / _ if services(req, objectName) =>
+      MethodNotAllowed()
+
+    case req@DELETE -> Root / objectName / _ =>
+      MethodNotAllowed()
+
     case _ =>
       NotFound()
 
