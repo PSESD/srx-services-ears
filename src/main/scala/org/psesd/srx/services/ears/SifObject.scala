@@ -190,11 +190,10 @@ object SifObject extends SrxResourceService {
                             zoneId: String
                           ): SifResponse = {
 
-    // TODO: remove legacy PRS credentials after new SRX PRS service has been deployed and configured in HostedZone
     val srxPrsProvider = new SifProvider(
       Environment.srxEnvironmentUrl,
-      SifProviderSessionToken(Environment.getProperty("SRX_PRS_SESSION_TOKEN")),
-      SifProviderSharedSecret(Environment.getProperty("SRX_PRS_SHARED_SECRET")),
+      SifProviderSessionToken(Environment.getProperty(Environment.SrxSessionTokenKey)),
+      SifProviderSharedSecret(Environment.getProperty(Environment.SrxSharedSecretKey)),
       SifAuthenticationMethod.SifHmacSha256
     )
 
@@ -224,13 +223,12 @@ object SifObject extends SrxResourceService {
                             zoneId: String
                           ): SifResponse = {
     // TODO: use objectType vs "sres"
-    val resource = "%s/%s".format("sres", objectId)
+    val resource = "%s/%s".format("masterXsres", objectId)
 
-    // TODO: remove legacy PRS credentials after new SRX PRS service has been deployed and configured in HostedZone
     val srxPrsProvider = new SifProvider(
       Environment.srxEnvironmentUrl,
-      SifProviderSessionToken(Environment.getProperty("SRX_PRS_SESSION_TOKEN")),
-      SifProviderSharedSecret(Environment.getProperty("SRX_PRS_SHARED_SECRET")),
+      SifProviderSessionToken(Environment.getProperty(Environment.SrxSessionTokenKey)),
+      SifProviderSharedSecret(Environment.getProperty(Environment.SrxSharedSecretKey)),
       SifAuthenticationMethod.SifHmacSha256
     )
 

@@ -108,7 +108,7 @@ class SifObjectTests extends FunSuite {
     val result = SifObject.query(List[SifRequestParameter](
       SifRequestParameter("authorizedEntityId", "2"),
       SifRequestParameter("contextId", "DEFAULT"),
-      SifRequestParameter("districtStudentId", "xsreSample1"),
+      SifRequestParameter("districtStudentId", "11362710"),
       SifRequestParameter("externalServiceId", "5"),
       SifRequestParameter("objectName", "xSre"),
       SifRequestParameter("objectType", "xSre"),
@@ -117,7 +117,7 @@ class SifObjectTests extends FunSuite {
     assert(result.success)
     assert(result.statusCode == SifHttpStatusCode.Ok)
     val body = result.toXml.get.toXmlString
-    assert(body.contains("<localId>123456</localId>"))
+    assert(body.contains("<localId>11362710</localId>"))
   }
 
 }
