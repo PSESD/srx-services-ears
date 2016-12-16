@@ -123,7 +123,7 @@ object SifObject extends SrxResourceService {
         if (prsFilterResponse.isValid && prsFilterResponse.statusCode.equals(SifHttpStatusCode.Ok) && prsFilterResponse.body.isDefined) {
           // get unfiltered SIF object
           val sifObjectResponse = getSifObject(contextId, districtStudentId, objectType, zoneId)
-          if (sifObjectResponse.exceptions.isEmpty) {
+          if (sifObjectResponse.exceptions.isEmpty && sifObjectResponse.statusCode.equals(SifHttpStatusCode.Ok)) {
             if (sifObjectResponse.body.isDefined) {
               // return filtered SIF object
               transformSifObject(sifObjectResponse.body.get, prsFilterResponse.body.get)
@@ -131,20 +131,37 @@ object SifObject extends SrxResourceService {
               SrxResourceErrorResult(SifHttpStatusCode.NotFound, new SrxResourceNotFoundException(objectName))
             }
           } else {
-            SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, sifObjectResponse.exceptions.head)
+            if (sifObjectResponse.statusCode.equals(SifHttpStatusCode.NotFound)) {
+              SrxResourceErrorResult(SifHttpStatusCode.NotFound, new SrxResourceNotFoundException(objectName))
+            } else {
+              if (sifObjectResponse.exceptions.isEmpty) {
+                val sifObjectResponseXml = sifObjectResponse.getBodyXml
+                if (sifObjectResponseXml.isDefined) {
+                  SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, new Exception((sifObjectResponseXml.get \ "message").text))
+                } else {
+                  SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, new Exception("Failed to retrieve student '%s'".format(districtStudentId)))
+                }
+              } else {
+                SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, sifObjectResponse.exceptions.head)
+              }
+            }
           }
         } else {
-          // TODO: submit PRS Filters error to Rollbar
-          if (prsFilterResponse.exceptions.nonEmpty) {
-            // return any exceptions connecting to or receiving a response from PRS
-            SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, prsFilterResponse.exceptions.head)
+          if(prsFilterResponse.statusCode.equals(SifHttpStatusCode.NotFound)) {
+            SrxResourceErrorResult(SifHttpStatusCode.NotFound, new SrxResourceNotFoundException(objectName))
           } else {
-            if (prsFilterResponse.body.isDefined && prsFilterResponse.body.get.contains("<error") && prsFilterResponse.body.get.contains("<message")) {
-              // return the original PRS error message received from SIF environment broker
-              SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, new Exception((prsFilterResponse.body.get.toXml \ "message").text))
+            // TODO: submit PRS Filters error to Rollbar
+            if (prsFilterResponse.exceptions.nonEmpty) {
+              // return any exceptions connecting to or receiving a response from PRS
+              SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, prsFilterResponse.exceptions.head)
             } else {
-              // return a generic message indicating the PRS filter could not be retrieved
-              SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, new SrxResourceNotFoundException("%s PRS filter".format(objectName)))
+              if (prsFilterResponse.body.isDefined && prsFilterResponse.body.get.contains("<error") && prsFilterResponse.body.get.contains("<message")) {
+                // return the original PRS error message received from SIF environment broker
+                SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, new Exception((prsFilterResponse.body.get.toXml \ "message").text))
+              } else {
+                // return a generic message indicating the PRS filter could not be retrieved
+                SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, new SrxResourceNotFoundException("%s PRS filter".format(objectName)))
+              }
             }
           }
         }

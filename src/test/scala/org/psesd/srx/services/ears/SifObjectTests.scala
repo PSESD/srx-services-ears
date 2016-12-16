@@ -100,15 +100,29 @@ class SifObjectTests extends FunSuite {
       SifRequestParameter("zoneId", "foo")
     ))
     assert(!result.success)
-    assert(result.statusCode == SifHttpStatusCode.InternalServerError)
-    assert(result.exceptions.head.getMessage().contains("Service[filters] not found in Domain[psesd], Solution[dev], Zone[foo], Context[DEFAULT]"))
+    assert(result.statusCode == SifHttpStatusCode.NotFound)
+    assert(result.exceptions.head.getMessage().contains("The requested xSre resource was not found."))
   }
 
-  ignore("query valid") {
+  test("query not found") {
     val result = SifObject.query(List[SifRequestParameter](
       SifRequestParameter("authorizedEntityId", "2"),
       SifRequestParameter("contextId", "DEFAULT"),
-      SifRequestParameter("districtStudentId", "11362710"),
+      SifRequestParameter("districtStudentId", "notfound"),
+      SifRequestParameter("externalServiceId", "5"),
+      SifRequestParameter("objectName", "xSre"),
+      SifRequestParameter("objectType", "xSre"),
+      SifRequestParameter("zoneId", "seattle")
+    ))
+    assert(!result.success)
+    assert(result.statusCode == SifHttpStatusCode.NotFound)
+  }
+
+  test("query seattle sample1") {
+    val result = SifObject.query(List[SifRequestParameter](
+      SifRequestParameter("authorizedEntityId", "2"),
+      SifRequestParameter("contextId", "DEFAULT"),
+      SifRequestParameter("districtStudentId", "sample1"),
       SifRequestParameter("externalServiceId", "5"),
       SifRequestParameter("objectName", "xSre"),
       SifRequestParameter("objectType", "xSre"),
@@ -117,7 +131,7 @@ class SifObjectTests extends FunSuite {
     assert(result.success)
     assert(result.statusCode == SifHttpStatusCode.Ok)
     val body = result.toXml.get.toXmlString
-    assert(body.contains("<localId>11362710</localId>"))
+    assert(body.contains("<localId>sample1</localId>"))
   }
 
 }
