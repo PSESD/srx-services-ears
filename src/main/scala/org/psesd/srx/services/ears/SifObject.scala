@@ -189,7 +189,7 @@ object SifObject extends SrxResourceService {
       SifAuthenticationMethod.SifHmacSha256
     )
 
-    val sifRequest = new SifRequest(srxPrsProvider, PrsFiltersResource, SifZone(zoneId), SifContext(contextId))
+    val sifRequest = new SifRequest(srxPrsProvider, PrsFiltersResource, SifZone(zoneId), SifContext())
     sifRequest.requestId = Some(SifMessageId().toString)
     sifRequest.contentType = Some(SifContentType.Xml)
     sifRequest.accept = Some(SifContentType.Xml)
@@ -224,7 +224,7 @@ object SifObject extends SrxResourceService {
       SifAuthenticationMethod.SifHmacSha256
     )
 
-    val sifRequest = new SifRequest(srxPrsProvider, resource, SifZone(zoneId), SifContext(contextId))
+    val sifRequest = new SifRequest(srxPrsProvider, resource, SifZone(zoneId), SifContext())
     sifRequest.requestId = Some(SifMessageId().toString)
     sifRequest.contentType = Some(SifContentType.Xml)
     sifRequest.accept = Some(SifContentType.Xml)
