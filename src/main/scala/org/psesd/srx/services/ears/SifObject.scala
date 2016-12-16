@@ -47,15 +47,7 @@ class SifObjectResult(httpStatusCode: Int, resultXml: Option[Node]) extends SrxR
   * @author Stephen Pugmire (iTrellis, LLC)
   */
 object SifObject extends SrxResourceService {
-  final val AuthorizedEntityIdParameter = "authorizedEntityId"
-  final val ContextIdParameter = "contextId"
-  final val DistrictStudentIdParameter = "districtStudentId"
-  final val ExternalServiceIdParameter = "externalServiceId"
-  final val ObjectNameParameter = "objectName"
-  final val ObjectTypeParameter = "objectType"
-  final val PersonnelIdParameter = "personnelId"
   final val PrsFiltersResource = "filters"
-  final val ZoneIdParameter = "zoneId"
 
   def create(resource: SrxResource, parameters: List[SifRequestParameter]): SrxResourceResult = {
     try {
@@ -93,29 +85,29 @@ object SifObject extends SrxResourceService {
         throw new ArgumentNullException("parameters collection")
       }
 
-      val authorizedEntityIdParam = parameters.find(p => p.key.toLowerCase == AuthorizedEntityIdParameter.toLowerCase)
-      authorizedEntityId = if (authorizedEntityIdParam.isDefined && !authorizedEntityIdParam.get.value.isNullOrEmpty) authorizedEntityIdParam.get.value.toInt else throw new ArgumentInvalidException(AuthorizedEntityIdParameter + " parameter")
+      val authorizedEntityIdParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.AuthorizedEntityId.toString.toLowerCase)
+      authorizedEntityId = if (authorizedEntityIdParam.isDefined && !authorizedEntityIdParam.get.value.isNullOrEmpty) authorizedEntityIdParam.get.value.toInt else throw new ArgumentInvalidException(SifObjectParameter.AuthorizedEntityId.toString + " parameter")
 
-      val contextIdParam = parameters.find(p => p.key.toLowerCase == ContextIdParameter.toLowerCase)
-      contextId = if (contextIdParam.isDefined && !contextIdParam.get.value.isNullOrEmpty) contextIdParam.get.value else throw new ArgumentInvalidException(ContextIdParameter + " parameter")
+      val contextIdParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.ContextId.toString.toLowerCase)
+      contextId = if (contextIdParam.isDefined && !contextIdParam.get.value.isNullOrEmpty) contextIdParam.get.value else throw new ArgumentInvalidException(SifObjectParameter.ContextId.toString + " parameter")
 
-      val districtStudentIdParam = parameters.find(p => p.key.toLowerCase == DistrictStudentIdParameter.toLowerCase)
-      districtStudentId = if (districtStudentIdParam.isDefined && !districtStudentIdParam.get.value.isNullOrEmpty) districtStudentIdParam.get.value else throw new ArgumentInvalidException(DistrictStudentIdParameter + " parameter")
+      val districtStudentIdParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.DistrictStudentId.toString.toLowerCase)
+      districtStudentId = if (districtStudentIdParam.isDefined && !districtStudentIdParam.get.value.isNullOrEmpty) districtStudentIdParam.get.value else throw new ArgumentInvalidException(SifObjectParameter.DistrictStudentId.toString + " parameter")
 
-      val externalServiceIdParam = parameters.find(p => p.key.toLowerCase == ExternalServiceIdParameter.toLowerCase)
-      externalServiceId = if (externalServiceIdParam.isDefined && !externalServiceIdParam.get.value.isNullOrEmpty) externalServiceIdParam.get.value.toInt else throw new ArgumentInvalidException(ExternalServiceIdParameter + " parameter")
+      val externalServiceIdParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.ExternalServiceId.toString.toLowerCase)
+      externalServiceId = if (externalServiceIdParam.isDefined && !externalServiceIdParam.get.value.isNullOrEmpty) externalServiceIdParam.get.value.toInt else throw new ArgumentInvalidException(SifObjectParameter.ExternalServiceId.toString + " parameter")
 
-      val objectNameParam = parameters.find(p => p.key.toLowerCase == ObjectNameParameter.toLowerCase)
-      objectName = if (objectNameParam.isDefined && !objectNameParam.get.value.isNullOrEmpty) objectNameParam.get.value else throw new ArgumentInvalidException(ObjectNameParameter + " parameter")
+      val objectNameParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.ObjectName.toString.toLowerCase)
+      objectName = if (objectNameParam.isDefined && !objectNameParam.get.value.isNullOrEmpty) objectNameParam.get.value else throw new ArgumentInvalidException(SifObjectParameter.ObjectName.toString + " parameter")
 
-      val objectTypeParam = parameters.find(p => p.key.toLowerCase == ObjectTypeParameter.toLowerCase)
-      objectType = if (objectTypeParam.isDefined && !objectTypeParam.get.value.isNullOrEmpty) objectTypeParam.get.value else throw new ArgumentInvalidException(ObjectTypeParameter + " parameter")
+      val objectTypeParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.ObjectType.toString.toLowerCase)
+      objectType = if (objectTypeParam.isDefined && !objectTypeParam.get.value.isNullOrEmpty) objectTypeParam.get.value else throw new ArgumentInvalidException(SifObjectParameter.ObjectType.toString + " parameter")
 
-      val personnelIdParam = parameters.find(p => p.key.toLowerCase == PersonnelIdParameter.toLowerCase)
+      val personnelIdParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.PersonnelId.toString.toLowerCase)
       personnelId = if (personnelIdParam.isDefined && !personnelIdParam.get.value.isNullOrEmpty) personnelIdParam.get.value else null
 
-      val zoneIdParam = parameters.find(p => p.key.toLowerCase == ZoneIdParameter.toLowerCase)
-      zoneId = if (zoneIdParam.isDefined && !districtStudentIdParam.get.value.isNullOrEmpty) zoneIdParam.get.value else throw new ArgumentInvalidException(ZoneIdParameter + " parameter")
+      val zoneIdParam = parameters.find(p => p.key.toLowerCase == SifObjectParameter.ZoneId.toString.toLowerCase)
+      zoneId = if (zoneIdParam.isDefined && !districtStudentIdParam.get.value.isNullOrEmpty) zoneIdParam.get.value else throw new ArgumentInvalidException(SifObjectParameter.ZoneId.toString + " parameter")
 
       try {
         val prsFilterResponse = getPrsFilter(
@@ -205,12 +197,12 @@ object SifObject extends SrxResourceService {
     sifRequest.messageType = Some(SifMessageType.Request)
     sifRequest.requestType = Some(SifRequestType.Immediate)
 
-    sifRequest.addHeader(AuthorizedEntityIdParameter, authorizedEntityId.toString)
-    sifRequest.addHeader(DistrictStudentIdParameter, districtStudentId.toString)
-    sifRequest.addHeader(ExternalServiceIdParameter, externalServiceId.toString)
-    sifRequest.addHeader(ObjectTypeParameter, objectType.toString)
+    sifRequest.addHeader(SifObjectParameter.AuthorizedEntityId.toString, authorizedEntityId.toString)
+    sifRequest.addHeader(SifObjectParameter.DistrictStudentId.toString, districtStudentId.toString)
+    sifRequest.addHeader(SifObjectParameter.ExternalServiceId.toString, externalServiceId.toString)
+    sifRequest.addHeader(SifObjectParameter.ObjectType.toString, objectType.toString)
     if (!personnelId.isNullOrEmpty) {
-      sifRequest.addHeader(PersonnelIdParameter, personnelId.toString)
+      sifRequest.addHeader(SifObjectParameter.PersonnelId.toString, personnelId.toString)
     }
 
     new SifConsumer().query(sifRequest)

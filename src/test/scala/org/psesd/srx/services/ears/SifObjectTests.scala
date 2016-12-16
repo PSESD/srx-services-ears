@@ -104,7 +104,7 @@ class SifObjectTests extends FunSuite {
     assert(result.exceptions.head.getMessage().contains("Service[filters] not found in Domain[psesd], Solution[dev], Zone[foo], Context[DEFAULT]"))
   }
 
-  test("query valid") {
+  ignore("query valid") {
     val result = SifObject.query(List[SifRequestParameter](
       SifRequestParameter("authorizedEntityId", "2"),
       SifRequestParameter("contextId", "DEFAULT"),

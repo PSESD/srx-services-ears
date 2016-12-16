@@ -6,6 +6,7 @@ import org.psesd.srx.shared.core._
 import org.psesd.srx.shared.core.config.Environment
 import org.psesd.srx.shared.core.sif._
 
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext
 
 /** SRX External Authorized Retrieval Service server.
@@ -54,10 +55,10 @@ object EarsServer extends SrxServer {
       respondWithInfo(getDefaultSrxResponse(req))
 
     case req@GET -> Root / objectName / _ if services(req, objectName) =>
-      executeRequest(req, addRouteParams("objectName", objectName), objectName, SifObject)
+      executeRequest(req, getSifObjectRequestParameters(req, objectName), objectName, SifObject)
 
     case req@GET -> Root / objectName / _ =>
-      executeRequest(req, addRouteParams("objectName", objectName), objectName, SifObject)
+      executeRequest(req, getSifObjectRequestParameters(req, objectName), objectName, SifObject)
 
     case req@POST -> Root / objectName / _ if services(req, objectName) =>
       MethodNotAllowed()
@@ -77,6 +78,20 @@ object EarsServer extends SrxServer {
     case _ =>
       NotFound()
 
+  }
+
+  private def getSifObjectRequestParameters(req: Request, objectName: String): Option[List[SifRequestParameter]] = {
+    val params = ArrayBuffer[SifRequestParameter]()
+    params += SifRequestParameter(SifObjectParameter.ObjectName.toString, objectName)
+    for (h <- req.headers) {
+      val headerName = h.name.value.toLowerCase
+      if(headerName == SifObjectParameter.AuthorizedEntityId.toString.toLowerCase) params += SifRequestParameter(SifObjectParameter.AuthorizedEntityId.toString, h.value)
+      if(headerName == SifObjectParameter.DistrictStudentId.toString.toLowerCase) params += SifRequestParameter(SifObjectParameter.DistrictStudentId.toString, h.value)
+      if(headerName == SifObjectParameter.ExternalServiceId.toString.toLowerCase) params += SifRequestParameter(SifObjectParameter.ExternalServiceId.toString, h.value)
+      if(headerName == SifObjectParameter.ObjectType.toString.toLowerCase) params += SifRequestParameter(SifObjectParameter.ObjectType.toString, h.value)
+      if(headerName == SifObjectParameter.PersonnelId.toString.toLowerCase) params += SifRequestParameter(SifObjectParameter.PersonnelId.toString, h.value)
+    }
+    Some(params.toList)
   }
 
 }
