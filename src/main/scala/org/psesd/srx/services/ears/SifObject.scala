@@ -48,6 +48,7 @@ class SifObjectResult(httpStatusCode: Int, resultXml: Option[Node]) extends SrxR
   */
 object SifObject extends SrxResourceService {
   final val PrsFiltersResource = "filters"
+  final val MasterXsresResource = "masterXsres"
 
   def create(resource: SrxResource, parameters: List[SifRequestParameter]): SrxResourceResult = {
     try {
@@ -198,15 +199,7 @@ object SifObject extends SrxResourceService {
                             personnelId: String,
                             zoneId: String
                           ): SifResponse = {
-
-    val srxPrsProvider = new SifProvider(
-      Environment.srxEnvironmentUrl,
-      SifProviderSessionToken(Environment.getProperty(Environment.SrxSessionTokenKey)),
-      SifProviderSharedSecret(Environment.getProperty(Environment.SrxSharedSecretKey)),
-      SifAuthenticationMethod.SifHmacSha256
-    )
-
-    val sifRequest = new SifRequest(srxPrsProvider, PrsFiltersResource, SifZone(zoneId), SifContext())
+    val sifRequest = getSifRequest(PrsFiltersResource, zoneId)
     sifRequest.requestId = Some(SifMessageId().toString)
     sifRequest.contentType = Some(SifContentType.Xml)
     sifRequest.accept = Some(SifContentType.Xml)
@@ -231,17 +224,10 @@ object SifObject extends SrxResourceService {
                             objectType: String,
                             zoneId: String
                           ): SifResponse = {
-    // TODO: use objectType vs "sres"
-    val resource = "%s/%s".format("masterXsres", objectId)
+    // TODO: support multiple object types? SRE vs xSRE?
+    val resource = "%s/%s".format(MasterXsresResource, objectId)
 
-    val srxPrsProvider = new SifProvider(
-      Environment.srxEnvironmentUrl,
-      SifProviderSessionToken(Environment.getProperty(Environment.SrxSessionTokenKey)),
-      SifProviderSharedSecret(Environment.getProperty(Environment.SrxSharedSecretKey)),
-      SifAuthenticationMethod.SifHmacSha256
-    )
-
-    val sifRequest = new SifRequest(srxPrsProvider, resource, SifZone(zoneId), SifContext())
+    val sifRequest = getSifRequest(resource, zoneId)
     sifRequest.requestId = Some(SifMessageId().toString)
     sifRequest.contentType = Some(SifContentType.Xml)
     sifRequest.accept = Some(SifContentType.Xml)
@@ -267,6 +253,20 @@ object SifObject extends SrxResourceService {
       case e: Exception =>
         SrxResourceErrorResult(SifHttpStatusCode.InternalServerError, e)
     }
+  }
+
+  private def getSifRequest(resource: String, zoneId: String): SifRequest = {
+    new SifRequest(
+      new SifProvider(
+        SifProviderUrl(Environment.getProperty(Environment.SrxEnvironmentUrlKey)),
+        SifProviderSessionToken(Environment.getProperty(Environment.SrxSessionTokenKey)),
+        SifProviderSharedSecret(Environment.getProperty(Environment.SrxSharedSecretKey)),
+        SifAuthenticationMethod.SifHmacSha256
+      ),
+      resource,
+      SifZone(zoneId),
+      SifContext()
+    )
   }
 
 }
