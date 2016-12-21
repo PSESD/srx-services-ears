@@ -33,19 +33,19 @@ The following optional headers may also be included:
 
 Header | Description | Example
 ------ | ----------- | -------
-personnelId | PRS ID of the authorized personnel making the request | 1
-generatorId | Identification token of the “generator” of this request or event | testgenerator
-messageId | Consumer-generated. If specified, must be set to a valid UUID | ba74efac-94c1-42bf-af8b-9b149d067816
+personnelId | PRS ID of the authorized personnel making the request. | 1
+generatorId | Identification token of the “generator” of this request or event. | testgenerator
+messageId | Consumer-generated. If specified, must be set to a valid UUID. | ba74efac-94c1-42bf-af8b-9b149d067816
 messageType | If specified, must be set to: REQUEST | REQUEST
 requestAction | If specified, must be set to: QUERY | QUERY
-requestId | Consumer-generated. If specified, must be set to a valid UUID | ba74efac-94c1-42bf-af8b-9b149d067816
+requestId | Consumer-generated. If specified, must be set to a valid UUID. | ba74efac-94c1-42bf-af8b-9b149d067816
 requestType | If specified, must be set to: IMMEDIATE | IMMEDIATE
 serviceType | If specified, must be set to: OBJECT | OBJECT
 
 #### Example EARS GET request
 ```
 GET
-https://srx-services-ears-dev.herokuapp.com/xSres/9245017;zoneId=test;contextId=test
+https://srx-services-ears-dev.herokuapp.com/xSres/1957207;zoneId=test;contextId=test
 
 authorization: SIF_HMACSHA256 ZGNlYjgxZmQtNjE5My00NWVkL...
 timestamp: 2016-12-20T18:09:18.539Z
