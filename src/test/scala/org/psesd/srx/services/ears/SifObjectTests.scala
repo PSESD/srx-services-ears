@@ -118,7 +118,7 @@ class SifObjectTests extends FunSuite {
     assert(result.statusCode == SifHttpStatusCode.NotFound)
   }
 
-  test("query seattle sample1") {
+  ignore("query seattle sample1") {
     val result = SifObject.query(List[SifRequestParameter](
       SifRequestParameter("authorizedEntityId", "2"),
       SifRequestParameter("contextId", "DEFAULT"),
