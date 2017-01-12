@@ -4,6 +4,71 @@
 EARS authorizes requests for xSRE student records, retrieves, filters and returns xSREs with limited data per filter rules defined in the Privacy Rules Service (PRS) for a particular authorized consumer.
 
 ***
+
+## Configuration
+
+### Environment Variables
+Variable | Description | Example
+-------- | ----------- | -------
+ENVIRONMENT | Deployment environment name.  | development
+LOG_LEVEL | Logging level (info, debug, error). | debug
+ROLLBAR_ACCESS_TOKEN | Rollbar access token for error logging. | (see Heroku)
+ROLLBAR_URL | URL to Rollbar API. | https://api.rollbar.com/api/1/item/
+SERVER_API_ROOT  | Root path for this service. | (typically leave blank)
+SERVER_HOST | Host IP for this service. | 127.0.0.1
+SERVER_NAME | Server name for this service. | localhost
+SERVER_PORT | Port this service listens on. | 8080
+SERVER_URL | URL for this service. | http://localhost
+SRX_ENVIRONMENT_URL | HostedZone environment URL. | https://psesd.hostedzone.com/svcs/dev/requestProvider
+SRX_PRS_SESSION_TOKEN | HostedZone PRS session token assigned to this service. |(see HostedZone configuration)
+SRX_PRS_SHARED_SECRET | HostedZone PRS session token assigned to this service. | (see HostedZone configuration)
+SRX_SESSION_TOKEN | HostedZone session token assigned to this service. | (see HostedZone configuration)
+SRX_SHARED_SECRET | HostedZone shared secret assigned to this service. | (see HostedZone configuration)
+
+### HostedZone
+
+The EARS service (srx-services-ears) must be registered in HostedZone as a new "environment" (application) that provides the following "services" (resources):
+
+ * xSres
+
+Once registered, the supplied HostedZone session token and shared secret should be set in the srx-services-ears host server (Heroku) environment variables (see above).
+
+This EARS service must be further configured in HostedZone as follows:
+
+Service | Zone | Context | Provide | Query | Create | Update | Delete
+------- | ---- | ------- | ------- | ----- | ------ | ------ | ------
+filters | default | default |   | X |   |  |
+filters | [district*] | default |   | X |   |  |
+filters | test | default |   | X |   |  |
+filters | test | test |   | X |   |  |
+masterXsres | default | default |   | X |   |  |
+masterXsres | [district*] | default |   | X |   |  |
+masterXsres | [district*] | district |   | X |   |  |
+masterXsres | test | default |   | X |   |  |
+masterXsres | test | district |   | X |   |  |
+masterXsres | test | test |   | X |   |  |
+srxMessages | default | default |   |   | X |  |
+srxMessages | [district*] | default |   |   | X |  |
+srxMessages | test | default |   |   | X |  |
+srxMessages | test | test |   |   | X |  |
+srxZoneConfig | default | default |   | X |   |  |
+srxZoneConfig | [district*] | default |   | X |   |  |
+srxZoneConfig | test | default |   | X |   |  |
+srxZoneConfig | test | test |   | X |   |  |
+xSres | default | default | X | X |   |  |
+xSres | [district*] | default | X | X |   |  |
+xSres | [district*] | CBO | X | X |   |  |
+xSres | test | CBO | X | X |   |  |
+xSres | test | default | X | X |   |  |
+xSres | test | test | X | X |   |  |
+
+
+[district*] = all district zones utilizing SRX services
+
+## Usage
+```TODO: put usage details here ```
+
+### xSREs
 xSREs are retrieved via a GET request using the following URL format:
 
 ```
