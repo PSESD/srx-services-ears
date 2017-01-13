@@ -54,3 +54,5 @@ lazy val root = (project in file(".")).
 lazy val srxCore = RootProject(uri("https://github.com/PSESD/srx-shared-core.git"))
 
 enablePlugins(JavaServerAppPackaging)
+
+parallelExecution in Test := false

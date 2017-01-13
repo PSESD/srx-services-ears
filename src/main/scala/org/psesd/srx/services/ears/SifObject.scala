@@ -235,6 +235,7 @@ object SifObject extends SrxResourceService {
     sifRequest.serviceType = Some(SifServiceType.Object)
     sifRequest.messageType = Some(SifMessageType.Request)
     sifRequest.requestType = Some(SifRequestType.Immediate)
+    sifRequest.generatorId = Some(EarsServer.srxService.service.name)
 
     new SifConsumer().query(sifRequest)
   }
