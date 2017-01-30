@@ -127,7 +127,13 @@ object SifObject extends SrxResourceService {
           if (sifObjectResponse.exceptions.isEmpty && sifObjectResponse.statusCode.equals(SifHttpStatusCode.Ok)) {
             if (sifObjectResponse.body.isDefined) {
               // return filtered SIF object
-              SrxMessageService.createRequestMessage(SifRequestAction.Query.toString(), zoneId, districtStudentId, SifRequestParameterCollection(parameters), EarsServer.srxService, Some(objectName), None)
+              EarsServer.logSuccessMessage(
+                SrxResourceType.Xsres.toString,
+                SifRequestAction.Query.toString,
+                Some(districtStudentId),
+                SifRequestParameterCollection(parameters),
+                None
+              )
               transformSifObject(sifObjectResponse.body.get, prsFilterResponse.body.get)
             } else {
               SrxResourceErrorResult(SifHttpStatusCode.NotFound, new SrxResourceNotFoundException(objectName))
