@@ -136,10 +136,24 @@ object SifObject extends SrxResourceService {
               )
               transformSifObject(sifObjectResponse.body.get, prsFilterResponse.body.get)
             } else {
+              EarsServer.logNotFoundMessage(
+                SrxResourceType.Xsres.toString,
+                SifRequestAction.Query.toString,
+                Some(districtStudentId),
+                SifRequestParameterCollection(parameters),
+                None
+              )
               SrxResourceErrorResult(SifHttpStatusCode.NotFound, new SrxResourceNotFoundException(objectName))
             }
           } else {
             if (sifObjectResponse.statusCode.equals(SifHttpStatusCode.NotFound)) {
+              EarsServer.logNotFoundMessage(
+                SrxResourceType.Xsres.toString,
+                SifRequestAction.Query.toString,
+                Some(districtStudentId),
+                SifRequestParameterCollection(parameters),
+                None
+              )
               SrxResourceErrorResult(SifHttpStatusCode.NotFound, new SrxResourceNotFoundException(objectName))
             } else {
               if (sifObjectResponse.exceptions.isEmpty) {
@@ -156,6 +170,13 @@ object SifObject extends SrxResourceService {
           }
         } else {
           if(prsFilterResponse.statusCode.equals(SifHttpStatusCode.NotFound)) {
+            EarsServer.logNotFoundMessage(
+              SrxResourceType.Xsres.toString,
+              SifRequestAction.Query.toString,
+              Some(districtStudentId),
+              SifRequestParameterCollection(parameters),
+              None
+            )
             SrxResourceErrorResult(SifHttpStatusCode.NotFound, new SrxResourceNotFoundException(objectName))
           } else {
             // TODO: submit PRS Filters error to Rollbar
