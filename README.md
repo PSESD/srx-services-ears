@@ -66,7 +66,6 @@ xSres | test | test | X | X |   |  |
 [district*] = all district zones utilizing SRX services
 
 ## Usage
-```TODO: put usage details here ```
 
 ### xSREs
 xSREs are retrieved via a GET request using the following URL format:
